@@ -6,35 +6,33 @@ import copy from 'rollup-plugin-copy'
 // @ts-ignore
 import pkg from './package.json'
 
-export default [
-  {
-    input: 'src/previewMain.ts',
-    output: [
-      {
-        file: pkg.main,
-        format: 'es',
-        sourcemap: true,
-      },
-    ],
-    plugins: [
-      copy({
-        targets: [
-          {
-            src: './src/vue.js',
-            dest: './dist',
-            rename: () => `vue.js`,
-          },
-        ],
-      }),
-      nodeResolve(),
-      commonjs(),
-      typescript({
-        typescript: require('typescript'),
-        objectHashIgnoreUnknownHack: true,
-      }),
-      // terser({
-      //   mangle: false, // keep output readable for debugging, even in production
-      // }),
-    ],
-  },
-]
+export default {
+  input: 'src/previewMain.ts',
+  output: [
+    {
+      file: pkg.main,
+      format: 'es',
+      sourcemap: true,
+    },
+  ],
+  plugins: [
+    copy({
+      targets: [
+        {
+          src: './src/vue.js',
+          dest: './dist',
+          rename: () => `vue.js`,
+        },
+      ],
+    }),
+    nodeResolve(),
+    commonjs(),
+    typescript({
+      typescript: require('typescript'),
+      objectHashIgnoreUnknownHack: true,
+    }),
+    terser({
+      mangle: false, // keep output readable for debugging, even in production
+    }),
+  ],
+}

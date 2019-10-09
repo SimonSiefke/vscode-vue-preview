@@ -5,22 +5,28 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsc -b -w",
-    "sample": "parcel hot-reload-sample/index.html"
+    "clean": "rimraf dist",
+    "sample": "parcel hot-reload-sample/index.html",
+    "package": "npm run clean && cd packages/preview && npm run build && cd ../../ && webpack --mode production --config ./webpack/extension.webpack.config.js && node scripts/package.js && npm run bundlesize",
+    "bundlesize": "bundlesize",
+    "postinstall": "lerna bootstrap && tsc -b"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@vue/component-compiler-utils": "^3.0.0",
-    "parcel-bundler": "^1.12.4",
-    "vue": "^2.6.10",
-    "vue-hot-reload-api": "^2.3.4",
-    "vue-template-compiler": "^2.6.10"
-  },
   "devDependencies": {
     "@types/node": "^12.7.12",
     "bundlesize": "^0.18.0",
-    "typescript": "^3.7.0-dev.20191009"
+    "circular-dependency-plugin": "^5.2.0",
+    "fs-extra": "^8.1.0",
+    "lerna": "^3.16.5",
+    "lodash": "^4.17.15",
+    "semantic-release": "^15.13.24",
+    "semantic-release-vsce": "^2.2.8",
+    "ts-loader": "^6.2.0",
+    "typescript": "^3.7.0-dev.20191009",
+    "webpack": "^5.0.0-alpha.30",
+    "webpack-cli": "^3.3.9"
   },
   "prettier": {
     "semi": false,
@@ -55,7 +61,7 @@
       "compression": "none"
     },
     {
-      "path": "./dist/packages/injected-code/dist/html-preview.js",
+      "path": "./dist/packages/preview/dist/previewMain.js",
       "maxSize": "22.5 kB",
       "compression": "none"
     }

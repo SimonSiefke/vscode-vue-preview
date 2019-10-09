@@ -1,12 +1,11 @@
-import * as templateCompiler from 'vue-template-compiler'
-import { parse,  } from '@vue/component-compiler-utils'
+import { parse } from '@vue/component-compiler-utils'
 import * as VueTemplateCompiler from 'vue-template-compiler'
 
 export const compile = ({ source }) => {
   const parsed = parse({
     source: source,
     // @ts-ignore
-    compiler: templateCompiler,
+    compiler: VueTemplateCompiler,
     filename: 'x.vue',
   }) //?
   parsed

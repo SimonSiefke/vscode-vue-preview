@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const templateCompiler = require("vue-template-compiler");
 const component_compiler_utils_1 = require("@vue/component-compiler-utils");
 const VueTemplateCompiler = require("vue-template-compiler");
 exports.compile = ({ source }) => {
@@ -8,7 +7,7 @@ exports.compile = ({ source }) => {
     const parsed = component_compiler_utils_1.parse({
         source: source,
         // @ts-ignore
-        compiler: templateCompiler,
+        compiler: VueTemplateCompiler,
         filename: 'x.vue',
     }); //?
     parsed;

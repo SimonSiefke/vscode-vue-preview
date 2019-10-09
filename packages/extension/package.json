@@ -31,7 +31,7 @@
     "live"
   ],
   "activationEvents": [
-    "*"
+    "onLanguage:vue"
   ],
   "scripts": {
     "dev": "cd ../../ && npm run dev"
@@ -40,5 +40,9 @@
   "devDependencies": {
     "@types/vscode": "^1.38.0",
     "typescript": "^3.7.0-dev.20191009"
+  },
+  "dependencies": {
+    "@vue/component-compiler-utils": "^3.0.0",
+    "vue-template-compiler": "^2.6.10"
   }
 }
