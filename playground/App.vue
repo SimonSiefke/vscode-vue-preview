@@ -1,6 +1,9 @@
 <template>
   <div>
     <p>hello {{ name }}</p>
+    <button>this is a button</button>
+
+    <p @click="count++">count: {{ count }}</p>
   </div>
 </template>
 
@@ -10,6 +13,7 @@ export default {
   data() {
     return {
       name: 'world',
+      count: 0,
     }
   },
 }
