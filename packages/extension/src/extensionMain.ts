@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import { compile } from './compile'
-import { getPreviewBase, getNonce, getPreviewBaseWebview } from './webViewUtils'
+import { getPreviewBase, getNonce, getPreviewBaseWebview } from './webviewUtils'
 
 const getPreviewHtml = ({
   context,

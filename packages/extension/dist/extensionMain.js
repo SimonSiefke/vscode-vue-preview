@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const vscode = require("vscode");
 const compile_1 = require("./compile");
-const webViewUtils_1 = require("./webViewUtils");
+const webviewUtils_1 = require("./webviewUtils");
 const getPreviewHtml = ({ context, webview, }) => {
-    const previewBaseWebview = webViewUtils_1.getPreviewBaseWebview({ webview, context });
-    const nonce = webViewUtils_1.getNonce();
+    const previewBaseWebview = webviewUtils_1.getPreviewBaseWebview({ webview, context });
+    const nonce = webviewUtils_1.getNonce();
     // TODO base
     return `<!DOCTYPE html>
 <html>
@@ -43,7 +43,7 @@ exports.activate = (context) => {
         webViewPanel.webview.options = {
             enableScripts: true,
             enableCommandUris: true,
-            localResourceRoots: [webViewUtils_1.getPreviewBase({ context })],
+            localResourceRoots: [webviewUtils_1.getPreviewBase({ context })],
         };
         webViewPanel.webview.html = getPreviewHtml({ context, webview: webViewPanel.webview });
         const updateWebviewPanel = ({ source }) => {

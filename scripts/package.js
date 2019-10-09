@@ -64,3 +64,7 @@ fs.copySync(
   path.join(root, 'packages/extension/dist'),
   path.join(root, 'dist/packages/extension/dist')
 )
+
+const compile = fs.readFileSync(path.join(root, 'packages/extension/dist/webviewUtils.js'), 'utf-8')
+const replaced = compile.replace("const ROOT = '../../'", `const ROOT = '.'`)
+fs.writeFileSync(path.join(root, 'dist/packages/extension/dist/webviewUtils.js'), replaced)

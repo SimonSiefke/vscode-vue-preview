@@ -13,7 +13,7 @@ export const compile = ({ source }) => {
   const style = parsed.styles[0]?.content //?
   let script = parsed.script?.content //?
   if(script){
-    script = '('+script.slice(script.indexOf('export default') + 'export default'.length)+')'
+    script = '('+script.slice(script.indexOf('export default') + 'export default'.length)+')' // convert to object
   }
   const compiledTemplate = VueTemplateCompiler.compile(template) //?
   const render = compiledTemplate.render
