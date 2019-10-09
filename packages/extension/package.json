@@ -1,0 +1,44 @@
+{
+  "name": "vue-preview",
+  "displayName": "Vue Preview",
+  "description": "Preview for Vue files",
+  "version": "1.0.0",
+  "publisher": "SimonSiefke",
+  "license": "MIT",
+  "homepage": "https://github.com/SimonSiefke/vscode-vue-preview",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SimonSiefke/vscode-vue-preview.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SimonSiefke/vscode-vue-preview/issues"
+  },
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#242b2b",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.38.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "vue preview",
+    "vue",
+    "preview",
+    "live"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "scripts": {
+    "dev": "cd ../../ && npm run dev"
+  },
+  "main": "dist/extensionMain.js",
+  "devDependencies": {
+    "@types/vscode": "^1.38.0",
+    "typescript": "^3.7.0-dev.20191009"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "name": "vue-preview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc -b -w",
+    "sample": "parcel hot-reload-sample/index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vue/component-compiler-utils": "^3.0.0",
+    "parcel-bundler": "^1.12.4",
+    "vue": "^2.6.10",
+    "vue-hot-reload-api": "^2.3.4",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.12",
+    "bundlesize": "^0.18.0",
+    "typescript": "^3.7.0-dev.20191009"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "arrowParens": "avoid",
+    "printWidth": 100
+  },
+  "release": {
+    "verifyConditions": [
+      "semantic-release-vsce"
+    ],
+    "prepare": [
+      {
+        "path": "semantic-release-vsce",
+        "packageVsix": "extension.vsix"
+      }
+    ],
+    "publish": [
+      "semantic-release-vsce"
+    ]
+  },
+  "renovate": {
+    "extends": [
+      "bitworkers"
+    ]
+  },
+  "bundlesize": [
+    {
+      "path": "./dist/packages/extension/dist/extensionMain.js",
+      "maxSize": "145.0 kB",
+      "compression": "none"
+    },
+    {
+      "path": "./dist/packages/injected-code/dist/html-preview.js",
+      "maxSize": "22.5 kB",
+      "compression": "none"
+    }
+  ]
+}
