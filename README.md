@@ -8,4 +8,4 @@
 
 - Live editing of vue files (for now only simple vue files are supported)
 
-<!-- TODO figure out why webpack isnt working -->
+<!-- TODO figure out why webpack isn't working -->
