@@ -43,8 +43,6 @@ module.exports = function withDefaults(/** @type WebpackConfig & {context:string
     },
     externals: {
       vscode: 'commonjs vscode', // ignored because it doesn't exist
-      bufferutil: 'commonjs bufferutil', // optional dependency of ws
-      'utf-8-validate': 'commonjs utf-8-validate', // optional dependency of ws
     },
     output: {
       // all output goes into `dist`.

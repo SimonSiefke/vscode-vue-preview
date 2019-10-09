@@ -45,3 +45,9 @@ for (const file of fs.readdirSync(path.join(root, 'packages/extension/images')))
 }
 
 fs.copySync(path.join(root, 'packages/preview/dist'), path.join(root, 'dist/packages/preview/dist'))
+
+// TODO remove this once webpack is working
+fs.copySync(
+  path.join(root, 'packages/extension/dist'),
+  path.join(root, 'dist/packages/extension/dist')
+)

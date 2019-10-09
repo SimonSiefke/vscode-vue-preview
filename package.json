@@ -2,12 +2,11 @@
   "name": "vue-preview",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "dev": "tsc -b -w",
     "clean": "rimraf dist",
     "sample": "parcel hot-reload-sample/index.html",
-    "package": "npm run clean && cd packages/preview && npm run build && cd ../../ && webpack --mode production --config ./webpack/extension.webpack.config.js && node scripts/package.js && npm run bundlesize",
+    "package": "npm run clean && cd packages/preview && npm run build && cd ../../ && node scripts/package.js && npm run bundlesize",
     "bundlesize": "bundlesize",
     "postinstall": "lerna bootstrap && tsc -b"
   },
@@ -57,12 +56,12 @@
   "bundlesize": [
     {
       "path": "./dist/packages/extension/dist/extensionMain.js",
-      "maxSize": "145.0 kB",
+      "maxSize": "4.0 kB",
       "compression": "none"
     },
     {
       "path": "./dist/packages/preview/dist/previewMain.js",
-      "maxSize": "22.5 kB",
+      "maxSize": "6 kB",
       "compression": "none"
     }
   ]
