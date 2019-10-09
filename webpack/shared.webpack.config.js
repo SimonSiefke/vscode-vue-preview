@@ -4,6 +4,9 @@
 
 const path = require('path')
 const _ = require('lodash')
+const nodeExternals = require('webpack-node-externals')
+
+nodeExternals() //?
 // const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 module.exports = function withDefaults(/** @type WebpackConfig & {context:string} */ extConfig) {
@@ -41,9 +44,10 @@ module.exports = function withDefaults(/** @type WebpackConfig & {context:string
         },
       ],
     },
-    externals: {
-      vscode: 'commonjs vscode', // ignored because it doesn't exist
-    },
+    externals: [
+      nodeExternals(),
+      { vscode: 'commonjs vscode', vue: 'commonjs vue', consolidate: 'commonjs consolidate' },
+    ],
     output: {
       // all output goes into `dist`.
       // packaging depends on that and this must always be like it

@@ -42,6 +42,9 @@
   },
   "dependencies": {
     "@vue/component-compiler-utils": "^3.0.0",
+    "less": "^3.10.3",
+    "sass": "^1.23.0",
+    "stylus": "^0.54.7",
     "vue-template-compiler": "^2.6.10"
   }
 }

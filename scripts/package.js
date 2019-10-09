@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs-extra')
+const { exec } = require('child_process')
 
 const root = path.join(__dirname, '..')
 
@@ -12,12 +13,24 @@ const pkg = require('../packages/extension/package.json')
 
 pkg.main = `./packages/extension/${pkg.main}`
 
-delete pkg.dependencies
-delete pkg.devDependencies
+// delete pkg.dependencies
+// delete pkg.devDependencies
 delete pkg.enableProposedApi
 delete pkg.scripts
 
 fs.writeFileSync(path.join(root, 'dist/package.json'), `${JSON.stringify(pkg, null, 2)}\n`)
+fs.copyFileSync(
+  path.join(root, 'packages/extension/package-lock.json'),
+  path.join(root, 'dist/package-lock.json')
+)
+exec('cd dist && npm ci', (err, stdout, stderr) => {
+  if (!err) {
+    return
+  }
+  console.error(err)
+  console.error(stderr)
+  throw err
+})
 
 for (const file of ['README.md', 'LICENSE', 'CHANGELOG.md']) {
   fs.copySync(path.join(root, file), `dist/${file}`)
