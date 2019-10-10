@@ -9,3 +9,9 @@
 - Live editing of vue files (for now only simple vue files are supported)
 
 <!-- TODO figure out why webpack isn't working -->
+
+## Commands
+
+| Command           | Keybinding   |
+| ----------------- | ------------ |
+| Vue Preview: Open | `ctrl+alt+p` |

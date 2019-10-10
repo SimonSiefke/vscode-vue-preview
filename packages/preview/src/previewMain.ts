@@ -2,55 +2,55 @@ import * as api from './template'
 import * as style from './style'
 const vscode = acquireVsCodeApi()
 
-const Component = {
-  data() {
-    return {
-      count: 0,
-    }
-  },
-  created() {
-    console.log('created')
-  },
-  render(h) {
-    return h(
-      'button',
-      {
-        on: {
-          click: () => {
-            this.count++
-          },
-        },
-      },
-      this.count
-    )
-  },
-}
+// const Component = {
+//   data() {
+//     return {
+//       count: 0,
+//     }
+//   },
+//   created() {
+//     console.log('created')
+//   },
+//   render(h) {
+//     return h(
+//       'button',
+//       {
+//         on: {
+//           click: () => {
+//             this.count++
+//           },
+//         },
+//       },
+//       this.count
+//     )
+//   },
+// }
 
-const newComponent = {
-  created() {
-    console.log('created')
-  },
-  render(h) {
-    return h(
-      'button',
-      {
-        on: {
-          click: () => {
-            this.count++
-          },
-        },
-      },
-      this.count
-    )
-  },
-  data() {
-    return {
-      count: 10,
-    }
-  },
-}
+// const newComponent = {
+//   created() {
+//     console.log('created')
+//   },
+//   render(h) {
+//     return h(
+//       'button',
+//       {
+//         on: {
+//           click: () => {
+//             this.count++
+//           },
+//         },
+//       },
+//       this.count
+//     )
+//   },
+//   data() {
+//     return {
+//       count: 10,
+//     }
+//   },
+// }
 
-api.reload(Component)
+// api.reload(Component)
 
 window.addEventListener('message', event => {
   const { command, payload } = JSON.parse(event.data)

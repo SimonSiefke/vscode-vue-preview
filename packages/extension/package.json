@@ -32,6 +32,22 @@
   "activationEvents": [
     "onLanguage:vue"
   ],
+  "contributes": {
+    "commands": [
+      {
+        "category": "Vue Preview",
+        "command": "vuePreview.openPreview",
+        "title": "Open Preview"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vuePreview.openPreview",
+        "key": "ctrl+alt+p",
+        "when": "resourceLangId == vue"
+      }
+    ]
+  },
   "scripts": {
     "dev": "cd ../../ && npm run dev"
   },
