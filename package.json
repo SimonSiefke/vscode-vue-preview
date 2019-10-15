@@ -8,7 +8,8 @@
     "sample": "parcel hot-reload-sample/index.html",
     "package": "npm run clean && cd packages/preview && npm run build && cd ../../ && tsc -b && node scripts/package.js && npm run bundlesize",
     "bundlesize": "bundlesize",
-    "postinstall": "lerna bootstrap && tsc -b"
+    "postinstall": "lerna bootstrap && tsc -b",
+    "reset-playground": "TODO"
   },
   "keywords": [],
   "author": "",
