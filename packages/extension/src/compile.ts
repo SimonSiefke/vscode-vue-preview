@@ -9,6 +9,7 @@ export const compile = ({ source }) => {
     filename: 'x.vue',
   }) //?
   parsed
+  const previewProps = parsed.customBlocks.find(block=>block.type==='preview-props')?.content//?
   const template = parsed.template.content //?
   const style = parsed.styles[0]?.content //?
   let script = parsed.script?.content //?
@@ -20,23 +21,46 @@ export const compile = ({ source }) => {
   return {
     render,
     style,
-    script
+    script,
+    previewProps
   }
 }
 
-// compile({ source: `<template><h1>hello</h1></template><style scoped>
-// button{
-//   color:green;
-// }
-// </style><script>
+// compile({ source: `<template>
+// <div>
+//   <p>hello {{ message }}</p>
+// </div>
+// </template>
+
+// <script>
 // export default {
-//   data(){
-//     return {
-//       count: 0
-//     }
-//   }
+// name: 'App',
+// props: {
+//   message: {
+//     type: String,
+//     required: true,
+//   },
+// },
 // }
-// </script>`})//?
+// </script>
+
+// <preview-props>
+// {
+// "message" : "hello world"
+// }
+// </preview-props>
+
+// <style lang="scss" scoped>
+// p{
+// border: 4px solid orange;
+// margin-top: 4rem;
+// padding: 4rem;
+// display: block
+// }
+// body{
+// background: rgb(71, 189, 110);
+// }
+// </style>`})//?
 
 // const staticRenderFns = '[' + compiled.staticRenderFns.map(toFunction).join(',') + ']'
 

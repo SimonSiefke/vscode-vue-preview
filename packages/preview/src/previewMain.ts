@@ -52,6 +52,41 @@ const vscode = acquireVsCodeApi()
 
 // api.reload(Component)
 
+const messageChannel = (() => {
+  const listeners: { [command: string]: any[] } = {}
+  return {
+    onMessage: (command: string, listener: (payload: any) => void) => {
+      listeners[command] = listeners[command] || []
+      listeners[command].push(listener)
+    },
+    broadcastMessage: (command: string, payload: any) => {
+      if (!listeners[command]) {
+        return
+      }
+      for (const listener of listeners[command]) {
+        listener(payload)
+      }
+    },
+  }
+})()
+
+// const component = (() => {
+//   let newComponent:any
+//   return {
+//     set script(value){
+//       if(!newComponent){}
+//     },
+//     set render(value){},
+//     scheduleRerender: () => {},
+//     scheduleReload: () => {},
+//   }
+// })()
+
+// const remotePluginApi: RemotePluginApi = {
+//   messageChannel,
+//   component,
+// }
+
 window.addEventListener('message', event => {
   const { command, payload } = JSON.parse(event.data)
   if (command === 'update') {
@@ -65,9 +100,12 @@ window.addEventListener('message', event => {
     }
     console.log(newComponent)
     api.reload(newComponent)
-    api.rerender(newComponent)
+    // api.rerender(newComponent)
     if (component.style !== undefined) {
       style.update(component.style)
+    }
+    if (component.previewProps) {
+      api.reloadProps(component.previewProps)
     }
   }
 })

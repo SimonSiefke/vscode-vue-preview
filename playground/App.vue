@@ -1,32 +1,36 @@
 <template>
   <div>
-    <p>hello {{ name }}</p>
-    <button>this is a button</button>
-
-    <p @click="count++">count: {{ count }}</p>
+    <p>hello {{ message }}</p>
   </div>
 </template>
 
 <script>
 export default {
   name: 'App',
-  data() {
-    return {
-      name: 'world',
-      count: 0,
-    }
+  props: {
+    message: {
+      type: String,
+      required: true,
+    },
   },
 }
 </script>
 
+<!-- TODO: syntax highlighting for this -->
+<preview-props>
+{
+  "message" : "world"
+}
+</preview-props>
+
 <style lang="scss" scoped>
-p{
+p {
   border: 4px solid orange;
   margin-top: 4rem;
   padding: 4rem;
   display: block
 }
 body{
-  background: rgb(7, 125, 221);
+  background: rgb(35, 150, 243);
 }
 </style>

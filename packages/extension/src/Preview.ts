@@ -2,6 +2,21 @@ import * as vscode from 'vscode'
 import { getPreviewBase, getNonce, getPreviewBaseWebview } from './webviewUtils'
 import { compile } from './compile'
 
+const measureExecutionTime: (fn: () => void) => void = fn => {
+  const NS_PER_MS = 1e6
+  const NS_PER_SEC = 1e9
+  const start = process.hrtime()
+  fn()
+  const elapsedTime = process.hrtime(start)
+  const elapsedTimeMs = (elapsedTime[0] * NS_PER_SEC + elapsedTime[1]) / NS_PER_MS
+
+  const maxAllowedTime = 5
+  if (elapsedTimeMs > maxAllowedTime) {
+    false && vscode.window.showErrorMessage(`performance violation: ${elapsedTimeMs}ms`)
+    console.log('took: ' + elapsedTimeMs)
+  }
+}
+
 const getPreviewHtml = ({
   context,
   webview,
@@ -54,6 +69,7 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
             render: compiled.render,
             style: compiled.style,
             script: compiled.script,
+            previewProps: compiled.previewProps,
           },
         },
       })
@@ -72,6 +88,8 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
     if (event.document.uri.fsPath !== vscode.window.activeTextEditor.document.uri.fsPath) {
       return
     }
+    // measureExecutionTime(() => {
     update({ source: event.document.getText() })
+    // })
   })
 }

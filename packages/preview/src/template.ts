@@ -6,18 +6,40 @@ api.install(Vue)
 
 const ComponentId = 'component'
 let Component
+let RootComponent
 
 const init = newComponent => {
   api.createRecord(ComponentId, newComponent)
-  new Vue({
+  RootComponent = new Vue({
     el: '#app',
-    render: h => h(newComponent),
+    data() {
+      return {
+        props: {
+          message: 'world',
+        },
+      }
+    },
+    render(h) {
+      return h(newComponent, {
+        props: this.props,
+      })
+    },
   })
   Component = newComponent
   return true
 }
 
-const notExists = (): boolean => !Component
+const notExists: () => boolean = () => !Component
+
+export const reloadProps = newProps => {
+  RootComponent.props = JSON.parse(newProps)
+}
+
+// setTimeout(() => {
+//   reloadProps({
+//     message: 'world 2',
+//   })
+// }, 2000)
 
 /**
  * updates the component and its state
