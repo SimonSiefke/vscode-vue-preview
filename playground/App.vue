@@ -16,7 +16,6 @@ export default {
 }
 </script>
 
-<!-- TODO: syntax highlighting for this -->
 <preview-props>
 {
   "message" : "world"
