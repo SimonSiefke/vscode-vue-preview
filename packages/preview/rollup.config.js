@@ -23,6 +23,11 @@ export default {
           dest: './dist',
           rename: () => `vue.js`,
         },
+        {
+          src: './src/preview.css',
+          dest: './dist',
+          rename: () => `preview.css`,
+        },
       ],
     }),
     nodeResolve(),

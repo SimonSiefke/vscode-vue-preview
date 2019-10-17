@@ -37,6 +37,7 @@ const getPreviewHtml = ({
       content="default-src 'none'; img-src 'self' data:; style-src vscode-resource: 'nonce-${nonce}'; script-src 'nonce-${nonce}' 'unsafe-eval';"
     >
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" nonce="${nonce}" href="${previewBaseWebview}/preview.css">
     <style id="style" nonce="${nonce}"></style>
   </head>
   <body>
@@ -92,9 +93,9 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
         {
           command: 'updateStaticRenderFns',
           payload: {
-            staticRenderFns: compiled.staticRenderFns
-          }
-        }
+            staticRenderFns: compiled.staticRenderFns,
+          },
+        },
       ])
     )
   }

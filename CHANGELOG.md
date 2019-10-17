@@ -2,6 +2,7 @@
 
 | Version | Date     | Changelog                                                             |
 | ------- | -------- | --------------------------------------------------------------------- |
+| 1.4.2   | 17.10.19 | &mdash; **[Fix]** Better default styles for the preview               |
 | 1.4.1   | 17.10.19 | &mdash; **[Fix]** Static render functions not working                 |
 | 1.4.0   | 17.10.19 | &mdash; **[Feature]** Setting for automatically opening the preview   |
 | 1.3.2   | 17.10.19 | &mdash; **[Fix]** Preview not working when script ends with semicolon |
