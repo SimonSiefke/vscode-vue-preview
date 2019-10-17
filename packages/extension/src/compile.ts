@@ -18,6 +18,7 @@ export const compile = ({ source }) => {
   }
   const compiledTemplate = VueTemplateCompiler.compile(template) //?
   const render = compiledTemplate.render
+
   return {
     render,
     style,

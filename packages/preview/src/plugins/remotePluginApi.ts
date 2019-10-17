@@ -1,13 +1,12 @@
 export interface RemotePluginApi {
   messageChannel: {
     onMessage: (command: string, listener: (payload: any) => void) => void
-    broadcastMessage: (command: string, payload: any) => void
+    // broadcastMessage: (command: string, payload: any) => void
   }
   component: {
-    script?: object
-    render?: Function
-    scheduleReload: () => void
-    scheduleRerender: () => void
+    setRender: Function
+    setScript: Function
+    setProps: Function
   }
 }
 

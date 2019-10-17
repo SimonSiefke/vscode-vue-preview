@@ -1,6 +1,9 @@
 <template>
   <div>
     <p>hello {{ message }}</p>
+    <button>its a button</button>
+    <p @click="count++">{{ count }}</p>
+    <button>ok</button>
   </div>
 </template>
 
@@ -13,6 +16,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      count: 222,
+    }
+  },
 }
 </script>
 
@@ -23,6 +31,7 @@ export default {
 </preview-props>
 
 <style lang="scss" scoped>
+
 p {
   border: 4px solid orange;
   margin-top: 4rem;

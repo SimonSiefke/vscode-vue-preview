@@ -41,8 +41,8 @@ const getPreviewHtml = ({
   </head>
   <body>
     <div id="app"></div>
-    <script src="${previewBaseWebview}/vue.js" nonce="${nonce}"></script>
-    <script src="${previewBaseWebview}/previewMain.js" nonce="${nonce}"></script>
+    <script type="module" src="${previewBaseWebview}/vue.js" nonce="${nonce}"></script>
+    <script type="module" src="${previewBaseWebview}/previewMain.js" nonce="${nonce}"></script>
   </body>
 </html>
 `
@@ -62,17 +62,32 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
   const update = ({ source }: { source: string }): void => {
     const compiled = compile({ source })
     webViewPanel.webview.postMessage(
-      JSON.stringify({
-        command: 'update',
-        payload: {
-          component: {
-            render: compiled.render,
+      JSON.stringify([
+        {
+          command: 'updateStyle',
+          payload: {
             style: compiled.style,
-            script: compiled.script,
-            previewProps: compiled.previewProps,
           },
         },
-      })
+        {
+          command: 'updateRender',
+          payload: {
+            render: compiled.render,
+          },
+        },
+        {
+          command: 'updateScript',
+          payload: {
+            script: compiled.script,
+          },
+        },
+        {
+          command: 'updateProps',
+          payload: {
+            props: compiled.previewProps,
+          },
+        },
+      ])
     )
   }
 

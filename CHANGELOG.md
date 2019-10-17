@@ -2,6 +2,7 @@
 
 | Version | Date     | Changelog                                                   |
 | ------- | -------- | ----------------------------------------------------------- |
+| 1.3.1   | 17.10.19 | &mdash; **[Fix]** Better hot reloading                      |
 | 1.3.0   | 16.10.19 | &mdash; **[Feature]** Syntax highlighting for preview props |
 | 1.2.0   | 16.10.19 | &mdash; **[Feature]** Preview Props                         |
 | 1.1.1   | 16.10.19 | &mdash; **[Fix]** Don't open by default                     |

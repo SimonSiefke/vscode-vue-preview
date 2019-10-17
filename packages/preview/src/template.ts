@@ -1,5 +1,4 @@
 import * as api from 'vue-hot-reload-api'
-
 const Vue = window.Vue
 console.log(Vue)
 api.install(Vue)
@@ -12,6 +11,9 @@ const init = newComponent => {
   api.createRecord(ComponentId, newComponent)
   RootComponent = new Vue({
     el: '#app',
+    errorCaptured(err) {
+      console.log('an error occured')
+    },
     data() {
       return {
         props: {
@@ -41,11 +43,29 @@ export const reloadProps = newProps => {
 //   })
 // }, 2000)
 
+let componentError
+
+Vue.config.warnHandler = warn => {
+  console.warn(warn)
+  componentError = warn
+}
+Vue.config.errorHandler = (err, vm, info) => {
+  console.error(err)
+  componentError = err
+  // err: error trace
+  // vm: component in which error occured
+  // info: Vue specific error information such as lifecycle hooks, events etc.
+  // TODO: Perform any custom logic or log to server
+}
+
+export const hasError = () => componentError
+
 /**
  * updates the component and its state
  * @param newComponent
  */
 export const reload = newComponent => {
+  componentError = undefined
   if (notExists()) {
     init(newComponent)
     return
