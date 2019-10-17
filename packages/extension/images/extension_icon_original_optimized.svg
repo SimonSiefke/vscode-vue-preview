@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-8.5 7.5 19.751 17.317">
+  <defs>
+    <path id="a" d="M.5 19.5l6 4 8-10-8 5-6-4-8 10z"/>
+  </defs>
+  <g fill="#fbb03b" stroke-linecap="round" transform="translate(-7.546 21.768) scale(.15983)">
+    <use width="100%" height="100%" transform="rotate(165 44.727 13.495) scale(4.05505)" xlink:href="#a"/>
+    <text x="11.605" y="17.64" stroke-width="1.272" aria-label="HTML" font-family="Roboto Slab" font-size="46.71" font-weight="400" letter-spacing="0" style="line-height:1.25;-inkscape-font-specification:'Roboto Slab, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start" word-spacing="0">
+      <tspan x="11.605" y="17.64" style="-inkscape-font-specification:'Roboto Slab, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start">Vue</tspan>
+    </text>
+  </g>
+</svg>

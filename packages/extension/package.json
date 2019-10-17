@@ -13,6 +13,7 @@
   "bugs": {
     "url": "https://github.com/SimonSiefke/vscode-vue-preview/issues"
   },
+  "icon": "images/icon.png",
   "galleryBanner": {
     "color": "#242b2b",
     "theme": "dark"
