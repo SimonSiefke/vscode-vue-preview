@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import { createPreviewPanel } from './Preview'
 
-const isFileVue = () =>
+export const isFileVue = () =>
   vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.languageId === 'vue'
 
 const doSyntaxHighlightingForPreviewProps = async () => {
@@ -44,7 +44,6 @@ export const activate = (context: vscode.ExtensionContext) => {
     createPreviewPanel({ context })
   })
 
-  
   if (isFileVue() && vscode.workspace.getConfiguration('vuePreview').get('autoOpen')) {
     createPreviewPanel({ context })
   }

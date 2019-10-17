@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import { getPreviewBase, getNonce, getPreviewBaseWebview } from './webviewUtils'
 import { compile } from './compile'
+import { isFileVue } from './extensionMain'
 
 const measureExecutionTime: (fn: () => void) => void = fn => {
   const NS_PER_MS = 1e6
@@ -52,6 +53,7 @@ const getPreviewHtml = ({
 export const createPreviewPanel = ({ context }: { context: vscode.ExtensionContext }) => {
   const webViewPanel = vscode.window.createWebviewPanel('vuePreview', 'Vue Preview', {
     viewColumn: vscode.ViewColumn.Beside,
+    preserveFocus: true,
   })
   webViewPanel.webview.options = {
     enableScripts: true,
@@ -101,6 +103,13 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
   }
 
   update({ source: vscode.window.activeTextEditor.document.getText() })
+
+  vscode.window.onDidChangeActiveTextEditor(event => {
+    if (!isFileVue()) {
+      return
+    }
+    update({ source: event.document.getText() })
+  })
 
   vscode.workspace.onDidChangeTextDocument(event => {
     if (event.contentChanges.length === 0) {
