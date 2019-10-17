@@ -21,7 +21,7 @@ export default {
       count: 222,
     }
   },
-}
+};
 </script>
 
 <preview-props>

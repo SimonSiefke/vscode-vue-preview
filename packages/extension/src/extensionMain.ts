@@ -44,7 +44,7 @@ export const activate = (context: vscode.ExtensionContext) => {
     createPreviewPanel({ context })
   })
 
-  // if (isFileVue()) {
-  //   createPreviewPanel({ context })
-  // }
+  if (isFileVue()) {
+    createPreviewPanel({ context })
+  }
 }
