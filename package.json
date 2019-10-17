@@ -63,7 +63,7 @@
     },
     {
       "path": "./dist/packages/preview/dist/previewMain.js",
-      "maxSize": "8 kB",
+      "maxSize": "9 kB",
       "compression": "none"
     }
   ]
