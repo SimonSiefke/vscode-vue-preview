@@ -23,9 +23,11 @@ export const compile = ({ source }) => {
   }
   const compiledTemplate = VueTemplateCompiler.compile(template) //?
   const render = compiledTemplate.render
+  const staticRenderFns = compiledTemplate.staticRenderFns
 
   return {
     render,
+    staticRenderFns,
     style,
     script,
     previewProps

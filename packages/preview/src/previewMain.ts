@@ -5,6 +5,7 @@ import { remotePluginStyle } from './plugins/remote-plugin-style/remotePluginSty
 import { remotePluginRender } from './plugins/remote-plugin-render/remotePluginRender'
 import { remotePluginScript } from './plugins/remote-plugin-script/remotePluginScript'
 import { remotePluginProps } from './plugins/remote-plugin-props/remotePluginProps'
+import { remotePluginStaticRenderFns } from './plugins/remote-plugin-static-render-fns/remotePluginStaticRenderFns'
 // const Component = {
 //   data() {
 //     return {
@@ -109,10 +110,12 @@ const listeners: { [key: string]: Array<(payload: any) => void> } = {}
 let componentScript
 let componentRender
 let componentProps
+let componentStaticRenderFns
 
 let componentRenderDirty = false
 let componentScriptDirty = false
 let componentPropsDirty = false
+let componentStaticRenderFnsDirty = false
 
 let animationFrame: number | undefined
 
@@ -123,23 +126,27 @@ const update = () => {
     console.log(componentScript)
     const newComponentRender = new Function(componentRender)
     const newComponentScript = eval(componentScript)
+    const newComponentStaticRenderFns = componentStaticRenderFns.map(fn => new Function(fn))
 
     newComponent = {
       render: newComponentRender,
       ...newComponentScript,
+      staticRenderFns: newComponentStaticRenderFns,
     }
     if (componentScriptDirty) {
       api.reload(newComponent)
       componentScriptDirty = false
       componentRenderDirty = false
-    } else if (componentRenderDirty) {
+    } else if (componentRenderDirty || componentStaticRenderFnsDirty) {
       if (api.hasError()) {
         api.reload(newComponent)
         componentRenderDirty = false
+        componentStaticRenderFnsDirty = false
       } else {
         console.log('only render')
         api.rerender(newComponent)
         componentRenderDirty = false
+        componentStaticRenderFnsDirty = false
       }
     }
     if (componentPropsDirty) {
@@ -164,6 +171,14 @@ const scheduleUpdate = () => {
 
 const remotePluginApi: RemotePluginApi = {
   component: {
+    setStaticRenderFns: staticRenderFns => {
+      if (JSON.stringify(componentStaticRenderFns) === JSON.stringify(staticRenderFns)) {
+        return
+      }
+      componentStaticRenderFns = staticRenderFns
+      componentStaticRenderFnsDirty = true
+      scheduleUpdate()
+    },
     setRender: render => {
       console.log('set render')
       if (componentRender === render) {
@@ -208,6 +223,7 @@ remotePluginStyle(remotePluginApi)
 remotePluginRender(remotePluginApi)
 remotePluginScript(remotePluginApi)
 remotePluginProps(remotePluginApi)
+remotePluginStaticRenderFns(remotePluginApi)
 
 // if (command === 'update') {
 //   const { component } = payload

@@ -61,6 +61,8 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
 
   const update = ({ source }: { source: string }): void => {
     const compiled = compile({ source })
+    console.log('update')
+    console.log(compiled)
     webViewPanel.webview.postMessage(
       JSON.stringify([
         {
@@ -87,6 +89,12 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
             props: compiled.previewProps,
           },
         },
+        {
+          command: 'updateStaticRenderFns',
+          payload: {
+            staticRenderFns: compiled.staticRenderFns
+          }
+        }
       ])
     )
   }
