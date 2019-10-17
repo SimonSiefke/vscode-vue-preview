@@ -1,4 +1,5 @@
 {
   "vetur.format.enable": false,
-  "vetur.format.defaultFormatter.js": "none"
+  "vetur.format.defaultFormatter.js": "none",
+  "vuePreview.autoOpen": true
 }

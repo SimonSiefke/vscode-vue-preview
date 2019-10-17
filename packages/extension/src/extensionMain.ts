@@ -44,7 +44,8 @@ export const activate = (context: vscode.ExtensionContext) => {
     createPreviewPanel({ context })
   })
 
-  if (isFileVue()) {
+  
+  if (isFileVue() && vscode.workspace.getConfiguration('vuePreview').get('autoOpen')) {
     createPreviewPanel({ context })
   }
 }

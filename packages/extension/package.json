@@ -33,6 +33,18 @@
     "onLanguage:vue"
   ],
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Vue Preview",
+      "properties": {
+        "vuePreview.autoOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically open the preview when a vue file is opened.",
+          "scope": "window"
+        }
+      }
+    },
     "commands": [
       {
         "category": "Vue Preview",
