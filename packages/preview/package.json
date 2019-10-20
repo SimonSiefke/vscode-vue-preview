@@ -21,6 +21,7 @@
     "typescript": "^3.7.0-dev.20191009"
   },
   "dependencies": {
+    "@vue/composition-api": "^0.3.2",
     "vue": "^2.6.10",
     "vue-hot-reload-api": "^2.3.4"
   }
