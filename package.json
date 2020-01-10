@@ -21,7 +21,7 @@
     "fs-extra": "^8.1.0",
     "lerna": "^3.16.5",
     "lodash": "^4.17.15",
-    "semantic-release": "^15.13.24",
+    "semantic-release": "^16.0.0",
     "semantic-release-vsce": "^2.2.8",
     "ts-loader": "^6.2.0",
     "typescript": "^3.7.0-dev.20191009",
