@@ -31,7 +31,8 @@
     "live"
   ],
   "activationEvents": [
-    "onLanguage:vue"
+    "onLanguage:vue",
+    "onCommand:vuePreview.openPreview"
   ],
   "contributes": {
     "configuration": {
@@ -58,6 +59,14 @@
         "command": "vuePreview.openPreview",
         "key": "ctrl+alt+p",
         "when": "resourceLangId == vue"
+      }
+    ],
+    "languages": [
+      {
+        "id": "vue",
+        "extensions": [
+          ".vue"
+        ]
       }
     ]
   },

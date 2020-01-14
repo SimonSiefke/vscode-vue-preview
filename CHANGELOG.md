@@ -2,6 +2,7 @@
 
 | Version | Date     | Changelog                                                                                                |
 | ------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| 1.6.0   | 14.01.20 | &mdash; **[Feature]** Support for composition api rfc                                                    |
 | 1.5.0   | 20.10.19 | &mdash; **[Feature]** Support for composition api rfc                                                    |
 | 1.4.3   | 17.10.19 | &mdash; **[Fix]** Preserve focus on the editor <br> &mdash; **[Fix]** Update preview when switching file |
 | 1.4.2   | 17.10.19 | &mdash; **[Fix]** Better default styles for the preview                                                  |
