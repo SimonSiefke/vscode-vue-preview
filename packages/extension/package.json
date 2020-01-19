@@ -19,7 +19,7 @@
     "theme": "dark"
   },
   "engines": {
-    "vscode": "^1.38.0"
+    "vscode": "^1.41.1"
   },
   "categories": [
     "Other"
@@ -31,7 +31,8 @@
     "live"
   ],
   "activationEvents": [
-    "onLanguage:vue"
+    "onLanguage:vue",
+    "onCommand:vuePreview.openPreview"
   ],
   "contributes": {
     "configuration": {
@@ -59,6 +60,14 @@
         "key": "ctrl+alt+p",
         "when": "resourceLangId == vue"
       }
+    ],
+    "languages": [
+      {
+        "id": "vue",
+        "extensions": [
+          ".vue"
+        ]
+      }
     ]
   },
   "scripts": {
@@ -66,14 +75,13 @@
   },
   "main": "dist/extensionMain.js",
   "devDependencies": {
-    "@types/vscode": "^1.38.0",
-    "typescript": "^3.7.0-dev.20191009"
+    "@types/vscode": "^1.41.0",
+    "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@vue/component-compiler-utils": "^3.0.0",
+    "@vue/compiler-sfc": "^3.0.0-alpha.2",
     "less": "^3.10.3",
-    "sass": "^1.23.0",
-    "stylus": "^0.54.7",
-    "vue-template-compiler": "^2.6.10"
+    "sass": "^1.25.0",
+    "stylus": "^0.54.7"
   }
 }

@@ -10,7 +10,9 @@ declare function acquireVsCodeApi(): VSCodeApi
 
 interface Window {
   acquireVsCodeApi: () => VSCodeApi
-  Vue: any
+  Vue: import('vue')
+  __VUE_HMR_RUNTIME__: import('vue').HMRRuntime
+  __UNUSED_NAMESPACE__: any
 }
 
 declare const DEVELOPMENT: boolean

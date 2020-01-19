@@ -1,38 +1,103 @@
-import { parse } from '@vue/component-compiler-utils'
-import * as VueTemplateCompiler from 'vue-template-compiler'
+import { compileTemplate, parse } from '@vue/compiler-sfc'
 
-export const compile = ({ source }) => {
-  const parsed = parse({
-    source: source,
-    // @ts-ignore
-    compiler: VueTemplateCompiler,
-    filename: 'x.vue',
-  }) //?
-  parsed
-  const previewProps = parsed.customBlocks.find(block=>block.type==='preview-props')?.content//?
-  const template = parsed.template.content //?
-  const style = parsed.styles[0]?.content //?
-  let script = parsed.script?.content //?
-  if(script){
-    script = '('+script.slice(script.indexOf('export default') + 'export default'.length) // convert to object
-    if(!script.endsWith('}')){
-      script = script.slice(0, script.lastIndexOf('}')+1)
-    }
-    script+=')' // convert to object
-    console.log(script)
-  }
-  const compiledTemplate = VueTemplateCompiler.compile(template) //?
-  const render = compiledTemplate.render
-  const staticRenderFns = compiledTemplate.staticRenderFns
+export const compile = (source: string) => {
+  const parsed = parse(source, { filename: 'x.vue' })
+  const previewProps = parsed.descriptor.customBlocks.find(block => block.type === 'preview-props')
+    ?.content //?
+  const template = parsed.descriptor.template.content //?
+  const style = parsed.descriptor.styles[0]?.content //?
+  const script = parsed.descriptor.script?.content //?
+  // if (script) {
+  //   script = '(' + script.slice(script.indexOf('export default') + 'export default'.length) // convert to object
+  //   if (!script.endsWith('}')) {
+  //     script = script.slice(0, script.lastIndexOf('}') + 1)
+  //   }
+  //   script += ')' // convert to object
+  //   console.log(script)
+  // }
+
+  const compiledTemplate = compileTemplate({ source: template, filename: 'x.vue' }).code //?
+  // console.log(compiledTemplate)
+  // let imports = compiledTemplate.slice(0, compiledTemplate.indexOf('\n\n'))
+  // imports
+  // compiledTemplate = compiledTemplate.replace(/import (.*)? from "vue"/, 'const $1 = window.Vue')
+
+  // compiledTemplate = compiledTemplate.slice(compiledTemplate.indexOf('\n') + 1, -2)
 
   return {
-    render,
-    staticRenderFns,
+    render: compiledTemplate,
     style,
     script,
-    previewProps
+    previewProps,
   }
 }
+
+compile(`<template>
+
+<h1>live render with vue 3 is super awesome
+{{x}}
+
+</h1>
+
+</template>
+
+<style>
+
+h1{
+color:orange;
+font-size:42px;
+
+}
+</style>
+
+<script>
+import {ref} from 'vue'
+
+export default {
+  setup(){
+    const x = ref(0)
+    return {
+      x
+    }
+  }
+}
+
+</script>`) //?
+
+// compile(`<template>
+
+// {{world}}
+// </template>
+
+// <script>
+// export default {}
+// </script>`) //?
+
+// compile(`<template>
+// <h1>hello {{world}}</h1>
+
+// </template>
+
+// <style>
+// h1{
+//   font-size: 29px;
+// }
+
+// </style>
+
+// <script>
+
+// export default {
+//   setup(){
+//     return {
+//       world: 'world'
+//     }
+//   }
+// }
+
+// </script>
+
+// `) //?
 
 // compile({ source: `<template>
 // <div>

@@ -15,18 +15,18 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^12.7.12",
+    "@types/node": "^13.1.8",
     "bundlesize": "^0.18.0",
     "circular-dependency-plugin": "^5.2.0",
     "fs-extra": "^8.1.0",
-    "lerna": "^3.16.5",
+    "lerna": "^3.20.2",
     "lodash": "^4.17.15",
-    "semantic-release": "^16.0.0",
+    "semantic-release": "^16.0.2",
     "semantic-release-vsce": "^2.2.8",
-    "ts-loader": "^6.2.0",
-    "typescript": "^3.7.0-dev.20191009",
-    "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2"
   },
   "prettier": {
@@ -63,7 +63,7 @@
     },
     {
       "path": "./dist/packages/preview/dist/previewMain.js",
-      "maxSize": "9 kB",
+      "maxSize": "240 kB",
       "compression": "none"
     }
   ]

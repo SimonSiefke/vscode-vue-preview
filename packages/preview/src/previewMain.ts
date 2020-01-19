@@ -1,246 +1,268 @@
-import * as api from './template'
-import { RemotePluginApi } from './plugins/remotePluginApi'
-const vscode = acquireVsCodeApi()
-import { remotePluginStyle } from './plugins/remote-plugin-style/remotePluginStyle'
-import { remotePluginRender } from './plugins/remote-plugin-render/remotePluginRender'
-import { remotePluginScript } from './plugins/remote-plugin-script/remotePluginScript'
-import { remotePluginProps } from './plugins/remote-plugin-props/remotePluginProps'
-import { remotePluginStaticRenderFns } from './plugins/remote-plugin-static-render-fns/remotePluginStaticRenderFns'
-// const Component = {
-//   data() {
-//     return {
-//       count: 0,
-//     }
-//   },
-//   created() {
-//     console.log('created')
-//   },
-//   render(h) {
-//     return h(
-//       'button',
-//       {
-//         on: {
-//           click: () => {
-//             this.count++
-//           },
-//         },
-//       },
-//       this.count
-//     )
-//   },
-// }
+import * as Vue from 'vue'
+import { ComponentOptions, RenderFunction } from 'vue'
+import { Message, MessageTypes } from './MessageTypes'
+import * as vueHmrApi from './vueHmrApi'
 
-// const newComponent = {
-//   created() {
-//     console.log('created')
-//   },
-//   render(h) {
-//     return h(
-//       'button',
-//       {
-//         on: {
-//           click: () => {
-//             this.count++
-//           },
-//         },
-//       },
-//       this.count
-//     )
-//   },
-//   data() {
-//     return {
-//       count: 10,
-//     }
-//   },
-// }
+window.Vue = Vue
 
-// api.reload(Component)
+const $style = document.getElementById('style') as HTMLStyleElement
 
-const messageChannel = (() => {
-  const listeners: { [command: string]: any[] } = {}
-  return {
-    onMessage: (command: string, listener: (payload: any) => void) => {
-      listeners[command] = listeners[command] || []
-      listeners[command].push(listener)
-    },
-    broadcastMessage: (command: string, payload: any) => {
-      if (!listeners[command]) {
-        // should not happen
-        return
-      }
-      for (const listener of listeners[command]) {
-        listener(payload)
-      }
-    },
+const updateComponent = ({
+  newComponentProps,
+  newComponentRender,
+  newComponentScript,
+  newComponentStyle,
+}: {
+  newComponentProps: string | undefined
+  newComponentRender: string | undefined
+  newComponentScript: string | undefined
+  newComponentStyle: string | undefined
+}) => {
+  let needsFullReload = false
+  let needsRerender = false
+  let newComponent: ComponentOptions = {}
+  // PROPS
+  if (newComponentProps) {
+    const processedNewComponentProps = JSON.parse(newComponentProps)
+    vueHmrApi.updateProps(processedNewComponentProps)
   }
-})()
+  // RENDER
+  if (newComponentRender) {
+    let processedNewComponentRender: ComponentOptions['render']
+    const importsMatch = newComponentRender.match(/import (.*)? from "vue"/) as RegExpMatchArray
+    const rest = newComponentRender.slice(importsMatch[0].length)
+    const renderFunctionContent = rest.slice(
+      '\n\nexport function render() {\n'.length,
+      -'}\n'.length
+    )
+    const globalVueDestructuring = `const ${importsMatch[1]} = window.Vue`
+    eval(globalVueDestructuring)
+    eval(`processedNewComponentRender = function(){${renderFunctionContent}}`)
+    newComponent = { ...newComponent, render: processedNewComponentRender }
+    lastProcessedComponentRender = processedNewComponentRender
+    needsRerender = true
+  } else if (lastProcessedComponentRender) {
+    newComponent = { ...newComponent, render: lastProcessedComponentRender }
+  }
+  // SCRIPT
+  if (newComponentScript) {
+    let scriptExport = newComponentScript.slice(
+      newComponentScript.indexOf('export default') + 'export default'.length
+    )
+    if (!scriptExport.endsWith('}')) {
+      scriptExport = scriptExport.slice(0, scriptExport.lastIndexOf('}') + 1)
+    }
+    let processedNewComponentScript: ComponentOptions = {}
+    eval(`processedNewComponentScript=${scriptExport}`)
+    newComponent = { ...newComponent, ...processedNewComponentScript }
+    lastProcessedComponentScript = processedNewComponentScript
+    needsFullReload = true
+  } else if (lastProcessedComponentScript) {
+    newComponent = { ...newComponent, ...lastProcessedComponentScript }
+  }
+  // STYLE
+  if (newComponentStyle) {
+    $style.innerText = newComponentStyle
+  }
+  // PERFORM UPDATE
+  if (needsFullReload) {
+    console.log('reload')
+    vueHmrApi.reload(newComponent)
+  } else if (needsRerender) {
+    console.log('rerender')
+    vueHmrApi.rerender(newComponent.render as RenderFunction)
+  }
+}
 
-// const component = (() => {
-//   let newComponent:any
-//   return {
-//     set script(value){
-//       if(!newComponent){}
-//     },
-//     set render(value){},
-//     scheduleRerender: () => {},
-//     scheduleReload: () => {},
+let newComponentProps: MessageTypes.UpdateProps['payload']['props'] | undefined
+let newComponentRender: MessageTypes.UpdateRender['payload']['render'] | undefined
+let newComponentScript: MessageTypes.UpdateScript['payload']['script'] | undefined
+let newComponentStyle: MessageTypes.UpdateStyle['payload']['style'] | undefined
+
+let lastComponentProps: MessageTypes.UpdateProps['payload']['props'] | undefined
+let lastComponentRender: MessageTypes.UpdateRender['payload']['render'] | undefined
+let lastComponentScript: MessageTypes.UpdateScript['payload']['script'] | undefined
+let lastComponentStyle: MessageTypes.UpdateStyle['payload']['style'] | undefined
+
+let lastProcessedComponentProps: object | undefined
+let lastProcessedComponentRender: NonNullable<ComponentOptions['render']> | undefined
+let lastProcessedComponentScript: ComponentOptions | undefined
+
+const throttle: (fn: () => void) => () => void = fn => {
+  let ticking = false
+  return () => {
+    if (ticking) {
+      return
+    }
+    ticking = true
+    requestAnimationFrame(() => {
+      fn()
+      ticking = false
+    })
+  }
+}
+
+const scheduleUpdateComponent = throttle(() => {
+  try {
+    updateComponent({
+      newComponentProps,
+      newComponentRender,
+      newComponentScript,
+      newComponentStyle,
+    })
+  } catch (error) {
+    console.warn('[VUE_HMR_ERROR]', error)
+  }
+  newComponentProps = undefined
+  newComponentRender = undefined
+  newComponentScript = undefined
+  newComponentStyle = undefined
+})
+
+window.onmessage = ({ data }: { data: string }) => {
+  const messages = JSON.parse(data) as Message[]
+  for (const message of messages) {
+    switch (message.type) {
+      case 'updateProps':
+        if (message.payload.props !== lastComponentProps) {
+          newComponentProps = message.payload.props
+          lastComponentProps = message.payload.props
+        }
+        continue
+      case 'updateRender':
+        if (message.payload.render !== lastComponentRender) {
+          newComponentRender = message.payload.render
+          lastComponentRender = message.payload.render
+        }
+        continue
+      case 'updateScript':
+        if (message.payload.script !== lastComponentScript) {
+          newComponentScript = message.payload.script
+          lastComponentScript = message.payload.script
+        }
+        continue
+      case 'updateStyle':
+        if (message.payload.style !== lastComponentStyle) {
+          newComponentStyle = message.payload.style
+          lastComponentStyle = message.payload.style
+        }
+        continue
+    }
+  }
+  scheduleUpdateComponent()
+}
+
+// const listeners: { [key: string]: Array<(payload: any) => void> } = {}
+
+// let stringComponentScript
+// let stringComponentRender
+// let componentProps
+
+// let componentRenderDirty = false
+// let componentScriptDirty = false
+// let componentPropsDirty = false
+
+// let animationFrame: number | undefined
+
+// let newComponent
+// const update = () => {
+//   try {
+//     // console.log(componentRender)
+//     // console.log(componentScript)
+//     // console.log(openBlock)
+//     // let newComponentRender =
+//     // eval(`function newComponentRender(){}`)
+//     let newComponentRender
+//     eval(`newComponentRender = function(){${stringComponentRender}}`)
+//     const newComponentScript = eval(stringComponentScript)
+//     newComponent = {
+//       render: newComponentRender,
+//       ...newComponentScript,
+//     }
+//     if (componentScriptDirty) {
+//       api.reload(newComponent)
+//       componentScriptDirty = false
+//       componentRenderDirty = false
+//     } else if (componentRenderDirty) {
+//       // if (api.hasError()) {
+//       //   api.reload(newComponent)
+//       //   componentRenderDirty = false
+//       // } else
+//       {
+//         console.log('only render')
+//         api.rerender(newComponent)
+//         componentRenderDirty = false
+//       }
+//     }
+//     if (componentPropsDirty) {
+//       console.log('reload props')
+//       // api.reloadProps(componentProps)
+//     }
+//   } catch (error) {
+//     console.warn(error)
+//     componentScriptDirty = true
+//     componentRenderDirty = true
+//   } finally {
+//     componentPropsDirty = false
+//     animationFrame = undefined
 //   }
-// })()
+// }
+
+// const scheduleUpdate = () => {
+//   if (animationFrame === undefined) {
+//     animationFrame = requestAnimationFrame(update)
+//   }
+// }
 
 // const remotePluginApi: RemotePluginApi = {
-//   messageChannel,
-//   component,
+//   component: {
+//     setRender: render => {
+//       console.log('set render')
+//       if (stringComponentRender === render) {
+//         console.log('same')
+//         return
+//       }
+//       stringComponentRender = render
+//       componentRenderDirty = true
+//       scheduleUpdate()
+//     },
+//     setScript: script => {
+//       console.log('set script')
+//       if (stringComponentScript === script) {
+//         console.log('same')
+//         return
+//       }
+//       stringComponentScript = script
+//       componentScriptDirty = true
+//       scheduleUpdate()
+//     },
+//     setProps: props => {
+//       // TODO lodash equals (or better: compare inside extension)
+//       if (JSON.stringify(componentProps) === JSON.stringify(props)) {
+//         return
+//       }
+//       componentProps = props
+//       componentPropsDirty = true
+//       scheduleUpdate()
+//     },
+//   },
+//   messageChannel: {
+//     onMessage: (command, listener) => {
+//       if (!listeners[command]) {
+//         listeners[command] = []
+//       }
+//       listeners[command].push(listener)
+//     },
+//     // broadcastMessage: (command, payload) => {},
+//   },
 // }
+// // remotePluginStyle(remotePluginApi)
+// // remotePluginRender(remotePluginApi)
+// // // remotePluginScript(remotePluginApi)
+// // // remotePluginProps(remotePluginApi)
+// // // remotePluginStaticRenderFns(remotePluginApi)
 
-window.onmessage = ({ data }) => {
-  const messages = JSON.parse(data)
-  for (const message of messages) {
-    const { command, payload } = message
-    if (command in listeners) {
-      listeners[command].forEach(listener => listener(payload))
-    } else {
-      // TODO
-      console.log(listeners)
-    }
-  }
-}
-
-const listeners: { [key: string]: Array<(payload: any) => void> } = {}
-
-let componentScript
-let componentRender
-let componentProps
-let componentStaticRenderFns
-
-let componentRenderDirty = false
-let componentScriptDirty = false
-let componentPropsDirty = false
-let componentStaticRenderFnsDirty = false
-
-let animationFrame: number | undefined
-
-let newComponent
-const update = () => {
-  try {
-    console.log(componentRender)
-    console.log(componentScript)
-    const newComponentRender = new Function(componentRender)
-    const newComponentScript = eval(componentScript)
-    const newComponentStaticRenderFns = componentStaticRenderFns.map(fn => new Function(fn))
-
-    newComponent = {
-      render: newComponentRender,
-      ...newComponentScript,
-      staticRenderFns: newComponentStaticRenderFns,
-    }
-    if (componentScriptDirty) {
-      api.reload(newComponent)
-      componentScriptDirty = false
-      componentRenderDirty = false
-    } else if (componentRenderDirty || componentStaticRenderFnsDirty) {
-      if (api.hasError()) {
-        api.reload(newComponent)
-        componentRenderDirty = false
-        componentStaticRenderFnsDirty = false
-      } else {
-        console.log('only render')
-        api.rerender(newComponent)
-        componentRenderDirty = false
-        componentStaticRenderFnsDirty = false
-      }
-    }
-    if (componentPropsDirty) {
-      console.log('reload props')
-      api.reloadProps(componentProps)
-    }
-  } catch (error) {
-    console.warn(error)
-    componentScriptDirty = true
-    componentRenderDirty = true
-  } finally {
-    componentPropsDirty = false
-    animationFrame = undefined
-  }
-}
-
-const scheduleUpdate = () => {
-  if (animationFrame === undefined) {
-    animationFrame = requestAnimationFrame(update)
-  }
-}
-
-const remotePluginApi: RemotePluginApi = {
-  component: {
-    setStaticRenderFns: staticRenderFns => {
-      if (JSON.stringify(componentStaticRenderFns) === JSON.stringify(staticRenderFns)) {
-        return
-      }
-      componentStaticRenderFns = staticRenderFns
-      componentStaticRenderFnsDirty = true
-      scheduleUpdate()
-    },
-    setRender: render => {
-      console.log('set render')
-      if (componentRender === render) {
-        console.log('same')
-        return
-      }
-      componentRender = render
-      componentRenderDirty = true
-      scheduleUpdate()
-    },
-    setScript: script => {
-      console.log('set script')
-      if (componentScript === script) {
-        console.log('same')
-        return
-      }
-      componentScript = script
-      componentScriptDirty = true
-      scheduleUpdate()
-    },
-    setProps: props => {
-      // TODO lodash equals (or better: compare inside extension)
-      if (JSON.stringify(componentProps) === JSON.stringify(props)) {
-        return
-      }
-      componentProps = props
-      componentPropsDirty = true
-      scheduleUpdate()
-    },
-  },
-  messageChannel: {
-    onMessage: (command, listener) => {
-      if (!listeners[command]) {
-        listeners[command] = []
-      }
-      listeners[command].push(listener)
-    },
-    // broadcastMessage: (command, payload) => {},
-  },
-}
-remotePluginStyle(remotePluginApi)
-remotePluginRender(remotePluginApi)
-remotePluginScript(remotePluginApi)
-remotePluginProps(remotePluginApi)
-remotePluginStaticRenderFns(remotePluginApi)
-
-// if (command === 'update') {
-//   const { component } = payload
-
-//   let newComponent = {
-//     render: new Function(component.render),
-//   }
-//   if (component.script !== undefined) {
-//     newComponent = { ...newComponent, ...eval(component.script) }
-//   }
-//   console.log(newComponent)
-//   api.reload(newComponent)
-//   // api.rerender(newComponent)
-//   if (component.style !== undefined) {
-//     style.update(component.style)
-//   }
-//   if (component.previewProps) {
-//     api.reloadProps(component.previewProps)
-//   }
-// }
+// remotePluginApi.component.setScript(function() {
+//   const _ctx = this
+//   return openBlock(), createBlock('h1', null, 'hello world')
+// })

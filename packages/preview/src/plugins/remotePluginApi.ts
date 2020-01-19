@@ -4,7 +4,6 @@ export interface RemotePluginApi {
     // broadcastMessage: (command: string, payload: any) => void
   }
   component: {
-    setStaticRenderFns:Function
     setRender: Function
     setScript: Function
     setProps: Function
