@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import { getPreviewBase, getNonce, getPreviewBaseWebview } from './webviewUtils'
 import { compile } from './compile'
 import { isFileVue } from './extensionMain'
+import { Message } from './MessageTypes'
 
 const measureExecutionTime: (fn: () => void) => void = fn => {
   const NS_PER_MS = 1e6
@@ -43,7 +44,7 @@ const getPreviewHtml = ({
   </head>
   <body>
     <div id="app"></div>
-    <script type="module" src="${previewBaseWebview}/vue.js" nonce="${nonce}"></script>
+    <!--<script type="module" src="${previewBaseWebview}/vue.js" nonce="${nonce}"></script>-->
     <script type="module" src="${previewBaseWebview}/previewMain.js" nonce="${nonce}"></script>
   </body>
 </html>
@@ -62,53 +63,44 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
   }
   webViewPanel.webview.html = getPreviewHtml({ context, webview: webViewPanel.webview })
 
-  const update = ({ source }: { source: string }): void => {
-    const compiled = compile({ source })
-    console.log('update')
-    console.log(compiled)
-    webViewPanel.webview.postMessage(
-      JSON.stringify([
-        {
-          command: 'updateStyle',
-          payload: {
-            style: compiled.style,
-          },
+  const update = (source: string): void => {
+    const compiled = compile(source)
+    const messages: Message[] = [
+      {
+        type: 'updateStyle',
+        payload: {
+          style: compiled.style,
         },
-        {
-          command: 'updateRender',
-          payload: {
-            render: compiled.render,
-          },
+      },
+      {
+        type: 'updateRender',
+        payload: {
+          render: compiled.render,
         },
-        {
-          command: 'updateScript',
-          payload: {
-            script: compiled.script,
-          },
+      },
+      {
+        type: 'updateScript',
+        payload: {
+          script: compiled.script,
         },
-        {
-          command: 'updateProps',
-          payload: {
-            props: compiled.previewProps,
-          },
+      },
+      {
+        type: 'updateProps',
+        payload: {
+          props: compiled.previewProps,
         },
-        {
-          command: 'updateStaticRenderFns',
-          payload: {
-            staticRenderFns: compiled.staticRenderFns,
-          },
-        },
-      ])
-    )
+      },
+    ]
+    webViewPanel.webview.postMessage(JSON.stringify(messages))
   }
 
-  update({ source: vscode.window.activeTextEditor.document.getText() })
+  update(vscode.window.activeTextEditor.document.getText())
 
   vscode.window.onDidChangeActiveTextEditor(event => {
     if (!isFileVue()) {
       return
     }
-    update({ source: event.document.getText() })
+    update(event.document.getText())
   })
 
   vscode.workspace.onDidChangeTextDocument(event => {
@@ -122,7 +114,7 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
       return
     }
     // measureExecutionTime(() => {
-    update({ source: event.document.getText() })
+    update(event.document.getText())
     // })
   })
 }

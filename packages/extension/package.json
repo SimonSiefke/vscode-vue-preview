@@ -79,10 +79,9 @@
     "typescript": "^3.7.0-dev.20191009"
   },
   "dependencies": {
-    "@vue/component-compiler-utils": "^3.0.0",
+    "@vue/compiler-sfc": "^3.0.0-alpha.2",
     "less": "^3.10.3",
     "sass": "^1.23.0",
-    "stylus": "^0.54.7",
-    "vue-template-compiler": "^2.6.10"
+    "stylus": "^0.54.7"
   }
 }
