@@ -2,6 +2,8 @@
 
 | Version | Date     | Changelog                                                                                                |
 | ------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| 1.7.1   | 25.01.20 | &mdash; **[Fix]** bug with multiple hoisted static nodes                                                 |
+| 1.7.0   | 19.01.20 | Accidental release                                                                                       |
 | 1.6.0   | 19.01.20 | &mdash; **[Feature]** Support for Vue 3                                                                  |
 | 1.5.0   | 20.10.19 | &mdash; **[Feature]** Support for composition api rfc                                                    |
 | 1.4.3   | 17.10.19 | &mdash; **[Fix]** Preserve focus on the editor <br> &mdash; **[Fix]** Update preview when switching file |
