@@ -30,14 +30,23 @@ const updateComponent = ({
   if (newComponentRender) {
     let processedNewComponentRender: ComponentOptions['render']
     const importsMatch = newComponentRender.match(/import (.*)? from "vue"/) as RegExpMatchArray
+    console.log(newComponentRender)
+    console.log(']]]]]]]]]]]')
     const rest = newComponentRender.slice(importsMatch[0].length)
-    const renderFunctionContent = rest.slice(
-      '\n\nexport function render() {\n'.length,
-      -'}\n'.length
+    const restWithLocalRenderFunction = rest.replace(
+      'export function render',
+      'processedNewComponentRender = function render'
     )
+    // console.log(rest)
+    // console.log('[[[[[[')
+    // const renderFunctionContent = rest.slice(
+    //   '\n\nexport function render() {\n'.length,
+    //   -'}\n'.length
+    // )
+    // console.log(renderFunctionContent)
     const globalVueDestructuring = `const ${importsMatch[1]} = window.Vue`
     eval(globalVueDestructuring)
-    eval(`processedNewComponentRender = function(){${renderFunctionContent}}`)
+    eval(restWithLocalRenderFunction)
     newComponent = { ...newComponent, render: processedNewComponentRender }
     lastProcessedComponentRender = processedNewComponentRender
     needsRerender = true

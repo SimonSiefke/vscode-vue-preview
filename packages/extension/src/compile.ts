@@ -33,36 +33,23 @@ export const compile = (source: string) => {
 }
 
 compile(`<template>
-
-<h1>live render with vue 3 is super awesome
-{{x}}
-
-</h1>
-
+  <div id="app">
+    <div>
+      <h1>Fuse.js</h1>
+      <h2>Lightweight</h2>
+    </div>
+    <h1>hello world</h1>
+  </div>
 </template>
 
+<script></script>
+
 <style>
-
-h1{
-color:orange;
-font-size:42px;
-
+h1 {
+  color: red;
 }
 </style>
-
-<script>
-import {ref} from 'vue'
-
-export default {
-  setup(){
-    const x = ref(0)
-    return {
-      x
-    }
-  }
-}
-
-</script>`) //?
+`) //?
 
 // compile(`<template>
 
