@@ -79,9 +79,9 @@
     "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@vue/compiler-sfc": "^3.0.0-alpha.2",
+    "@vue/compiler-sfc": "^3.0.0-alpha.3",
     "less": "^3.10.3",
-    "sass": "^1.25.0",
+    "sass": "^1.25.1-test.1",
     "stylus": "^0.54.7"
   }
 }
