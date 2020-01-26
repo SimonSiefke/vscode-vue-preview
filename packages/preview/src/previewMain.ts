@@ -3,9 +3,20 @@ import { ComponentOptions, RenderFunction } from 'vue'
 import { Message, MessageTypes } from './MessageTypes'
 import * as vueHmrApi from './vueHmrApi'
 
+// TODO full reload if there is an error
+
 window.Vue = Vue
 
+const vscode = acquireVsCodeApi()
 const $style = document.getElementById('style') as HTMLStyleElement
+
+interface State {
+  error: string | undefined
+}
+
+const state: State = {
+  error: undefined,
+}
 
 const updateComponent = ({
   newComponentProps,
@@ -18,7 +29,7 @@ const updateComponent = ({
   newComponentScript: string | undefined
   newComponentStyle: string | undefined
 }) => {
-  let needsFullReload = false
+  let needsFullReload = !!state.error
   let needsRerender = false
   let newComponent: ComponentOptions = {}
   // PROPS
@@ -76,6 +87,9 @@ const updateComponent = ({
   // PERFORM UPDATE
   if (needsFullReload) {
     console.log('reload')
+    if (state.error) {
+      state.error = undefined
+    }
     vueHmrApi.reload(newComponent)
   } else if (needsRerender) {
     console.log('rerender')
@@ -121,6 +135,11 @@ const scheduleUpdateComponent = throttle(() => {
     })
   } catch (error) {
     console.warn('[VUE_HMR_ERROR]', error)
+    state.error = 'update error'
+    vscode.postMessage({
+      type: 'setError',
+      payload: state.error,
+    })
   }
   newComponentProps = undefined
   newComponentRender = undefined

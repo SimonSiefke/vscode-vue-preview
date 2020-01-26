@@ -4,22 +4,7 @@
 
 ![demo](./demo_images/demo.png)
 
-## Features
-
-- Live editing of vue files (for now only simple vue files are supported)
-
-<!-- TODO figure out why webpack isn't working -->
-<!-- TODO split vue and previewMain again to see bundlesize impact -->
-<!-- TODO bug
-<div id="app">
-    <div>
-      <h1>Fuse.js</h1>
-      <h2>Lightweight</h2>
-    </div>
-    <h1>hello world</h1>
-  </div>
-
- -->
+Live editing of Vue files (for now only simple vue files are supported)
 
 ## Commands
 

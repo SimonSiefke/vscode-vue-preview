@@ -2,6 +2,7 @@
 
 | Version | Date     | Changelog                                                                                                |
 | ------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| 1.7.2   | 26.01.20 | &mdash; **[Fix]** preview not updating after an error occurred                                           |
 | 1.7.1   | 25.01.20 | &mdash; **[Fix]** bug with multiple hoisted static nodes                                                 |
 | 1.7.0   | 19.01.20 | Accidental release                                                                                       |
 | 1.6.0   | 19.01.20 | &mdash; **[Feature]** Support for Vue 3                                                                  |

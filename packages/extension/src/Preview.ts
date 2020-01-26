@@ -1,8 +1,11 @@
 import * as vscode from 'vscode'
-import { getPreviewBase, getNonce, getPreviewBaseWebview } from './webviewUtils'
+import { getPreviewBase, getNonce, getPreviewBaseWebview, getUri } from './webviewUtils'
 import { compile } from './compile'
 import { isFileVue } from './extensionMain'
 import { Message } from './MessageTypes'
+
+const iconPathNormal = 'packages/extension/images/bolt_original_yellow_optimized.svg'
+const iconPathError = 'packages/extension/images/bolt_original_red_optimized.svg'
 
 const measureExecutionTime: (fn: () => void) => void = fn => {
   const NS_PER_MS = 1e6
@@ -52,10 +55,16 @@ const getPreviewHtml = ({
 }
 
 export const createPreviewPanel = ({ context }: { context: vscode.ExtensionContext }) => {
+  const state: { error: string | undefined } = {
+    error: undefined,
+  }
   const webViewPanel = vscode.window.createWebviewPanel('vuePreview', 'Vue Preview', {
     viewColumn: vscode.ViewColumn.Beside,
     preserveFocus: true,
   })
+  webViewPanel.iconPath = state.error
+    ? getUri({ context, relativePath: iconPathError })
+    : getUri({ context, relativePath: iconPathNormal })
   webViewPanel.webview.options = {
     enableScripts: true,
     enableCommandUris: true,
@@ -63,44 +72,60 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
   }
   webViewPanel.webview.html = getPreviewHtml({ context, webview: webViewPanel.webview })
 
-  const update = (source: string): void => {
+  const update = (source: string | undefined): void => {
+    if (!source) {
+      return
+    }
     const compiled = compile(source)
+    if (compiled.error) {
+      state.error = 'compile error'
+      webViewPanel.iconPath = state.error
+        ? getUri({ context, relativePath: iconPathError })
+        : getUri({ context, relativePath: iconPathNormal })
+      return
+    }
+    if (state.error && !compiled.error) {
+      state.error = undefined
+      webViewPanel.iconPath = state.error
+        ? getUri({ context, relativePath: iconPathError })
+        : getUri({ context, relativePath: iconPathNormal })
+    }
     const messages: Message[] = [
       {
         type: 'updateStyle',
         payload: {
-          style: compiled.style,
+          style: compiled.style || '',
         },
       },
       {
         type: 'updateRender',
         payload: {
-          render: compiled.render,
+          render: compiled.render || '',
         },
       },
       {
         type: 'updateScript',
         payload: {
-          script: compiled.script,
+          script: compiled.script || '',
         },
       },
       {
         type: 'updateProps',
         payload: {
-          props: compiled.previewProps,
+          props: compiled.previewProps || '',
         },
       },
     ]
     webViewPanel.webview.postMessage(JSON.stringify(messages))
   }
 
-  update(vscode.window.activeTextEditor.document.getText())
+  update(vscode.window.activeTextEditor?.document.getText())
 
-  vscode.window.onDidChangeActiveTextEditor(event => {
+  vscode.window.onDidChangeActiveTextEditor(textEditor => {
     if (!isFileVue()) {
       return
     }
-    update(event.document.getText())
+    update(textEditor?.document.getText())
   })
 
   vscode.workspace.onDidChangeTextDocument(event => {
@@ -117,4 +142,16 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
     update(event.document.getText())
     // })
   })
+
+  context.subscriptions.push(
+    webViewPanel.webview.onDidReceiveMessage((message: any) => {
+      if (message.type === 'setError') {
+        const error = message.payload
+        state.error = error
+        webViewPanel.iconPath = state.error
+          ? getUri({ context, relativePath: iconPathError })
+          : getUri({ context, relativePath: iconPathNormal })
+      }
+    })
+  )
 }

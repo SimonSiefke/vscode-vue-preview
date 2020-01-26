@@ -2,11 +2,18 @@ import { compileTemplate, parse } from '@vue/compiler-sfc'
 
 export const compile = (source: string) => {
   const parsed = parse(source, { filename: 'x.vue' })
+  if (parsed.errors.length > 0) {
+    return {
+      error: true,
+    }
+  }
   const previewProps = parsed.descriptor.customBlocks.find(block => block.type === 'preview-props')
     ?.content //?
-  const template = parsed.descriptor.template.content //?
+  const template = parsed.descriptor.template?.content //?
   const style = parsed.descriptor.styles[0]?.content //?
   const script = parsed.descriptor.script?.content //?
+
+  // console.log(parsed.errors)
   // if (script) {
   //   script = '(' + script.slice(script.indexOf('export default') + 'export default'.length) // convert to object
   //   if (!script.endsWith('}')) {
@@ -16,7 +23,7 @@ export const compile = (source: string) => {
   //   console.log(script)
   // }
 
-  const compiledTemplate = compileTemplate({ source: template, filename: 'x.vue' }).code //?
+  const compiledTemplate = compileTemplate({ source: template || '', filename: 'x.vue' }).code //?
   // console.log(compiledTemplate)
   // let imports = compiledTemplate.slice(0, compiledTemplate.indexOf('\n\n'))
   // imports
@@ -29,6 +36,7 @@ export const compile = (source: string) => {
     style,
     script,
     previewProps,
+    error: false,
   }
 }
 

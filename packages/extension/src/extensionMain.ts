@@ -36,7 +36,7 @@ const doSyntaxHighlightingForPreviewProps = async () => {
 
 export const activate = (context: vscode.ExtensionContext) => {
   doSyntaxHighlightingForPreviewProps()
-  vscode.commands.registerCommand('vuePreview.openPreview', () => {
+  vscode.commands.registerTextEditorCommand('vuePreview.openPreview', () => {
     if (!isFileVue()) {
       vscode.window.showErrorMessage('no vue file')
       return
