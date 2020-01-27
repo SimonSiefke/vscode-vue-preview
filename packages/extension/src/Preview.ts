@@ -58,7 +58,7 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
   const state: { error: string | undefined } = {
     error: undefined,
   }
-  const webViewPanel = vscode.window.createWebviewPanel('vuePreview', 'Vue Preview', {
+  let webViewPanel = vscode.window.createWebviewPanel('vuePreview', 'Vue Preview', {
     viewColumn: vscode.ViewColumn.Beside,
     preserveFocus: true,
   })
@@ -121,14 +121,14 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
 
   update(vscode.window.activeTextEditor?.document.getText())
 
-  vscode.window.onDidChangeActiveTextEditor(textEditor => {
+  const listener1 = vscode.window.onDidChangeActiveTextEditor(textEditor => {
     if (!isFileVue()) {
       return
     }
     update(textEditor?.document.getText())
   })
 
-  vscode.workspace.onDidChangeTextDocument(event => {
+  const listener2 = vscode.workspace.onDidChangeTextDocument(event => {
     if (event.contentChanges.length === 0) {
       return
     }
@@ -143,15 +143,19 @@ export const createPreviewPanel = ({ context }: { context: vscode.ExtensionConte
     // })
   })
 
-  context.subscriptions.push(
-    webViewPanel.webview.onDidReceiveMessage((message: any) => {
-      if (message.type === 'setError') {
-        const error = message.payload
-        state.error = error
-        webViewPanel.iconPath = state.error
-          ? getUri({ context, relativePath: iconPathError })
-          : getUri({ context, relativePath: iconPathNormal })
-      }
-    })
-  )
+  const listener3 = webViewPanel.webview.onDidReceiveMessage((message: any) => {
+    if (message.type === 'setError') {
+      const error = message.payload
+      state.error = error
+      webViewPanel.iconPath = state.error
+        ? getUri({ context, relativePath: iconPathError })
+        : getUri({ context, relativePath: iconPathNormal })
+    }
+  })
+
+  webViewPanel.onDidDispose(() => {
+    listener1.dispose()
+    listener2.dispose()
+    listener3.dispose()
+  })
 }
